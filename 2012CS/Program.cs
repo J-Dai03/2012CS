@@ -692,39 +692,45 @@ namespace Breakthrough
 
     class CardCollection
     {
+        // Consists of a list of cards and a string desccribing the name
         protected List<Card> Cards = new List<Card>();
         protected string Name;
 
+        // Class constructor - sets Name to the input
         public CardCollection(string n)
         {
             Name = n;
         }
 
+        // Get functions
         public string GetName()
         {
             return Name;
         }
-
         public int GetCardNumberAt(int x)
         {
             return Cards[x].GetCardNumber();
         }
-
         public string GetCardDescriptionAt(int x)
         {
             return Cards[x].GetDescription();
         }
-
-        public void AddCard(Card c)
-        {
-            Cards.Add(c);
-        }
-
         public int GetNumberOfCards()
         {
             return Cards.Count;
         }
 
+        // Adds the card given as an argument to the list of cards
+        public void AddCard(Card c)
+        {
+            Cards.Add(c);
+        }
+        
+        // Shuffles the cards in the list
+        /* It does this by picking 2 positions in 
+         * the list and swapping the cards in those 
+         * positions, and repeating this 10000 times
+         */
         public void Shuffle()
         {
             Random RNoGen = new Random();
@@ -740,6 +746,7 @@ namespace Breakthrough
             }
         }
 
+        // 
         public Card RemoveCard(int cardNumber)
         {
             bool CardFound = false;
