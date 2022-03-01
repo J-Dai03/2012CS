@@ -707,6 +707,11 @@ namespace Breakthrough
         {
             return Name;
         }
+        public int GetNumberOfCards()
+        {
+            return Cards.Count;
+        }
+        //These functions get the data of the card in position x in the (zero-based) list
         public int GetCardNumberAt(int x)
         {
             return Cards[x].GetCardNumber();
@@ -714,10 +719,6 @@ namespace Breakthrough
         public string GetCardDescriptionAt(int x)
         {
             return Cards[x].GetDescription();
-        }
-        public int GetNumberOfCards()
-        {
-            return Cards.Count;
         }
 
         // Adds the card given as an argument to the list of cards
@@ -746,7 +747,8 @@ namespace Breakthrough
             }
         }
 
-        // 
+        // Pops the first instance of the card with the value equal to the input.
+        // If there is no card with that value in the list, null is returned.
         public Card RemoveCard(int cardNumber)
         {
             bool CardFound = false;
@@ -765,6 +767,7 @@ namespace Breakthrough
             return CardToGet;
         }
 
+        //Returns a string consisting of 6 times the input number of dashes
         private string CreateLineOfDashes(int size)
         {
             string LineOfDashes = "";
@@ -775,19 +778,44 @@ namespace Breakthrough
             return LineOfDashes;
         }
 
+
         public string GetCardDisplay()
         {
+            /* Sets CardDisplay to a string consisting of 2 lines, 
+             * The first line is empty
+             * The second line consists of the contents of the variable Name, followed by a colon
+             */
             string CardDisplay = Environment.NewLine + Name + ":";
+
+            // If the list of cards, Cards, is empty
             if (Cards.Count == 0)
             {
+                /* Returns a string consisting of 4 lines,
+                 * The first, third, and fourth lines are empty
+                 * The second line consists of the contents of the variable Name, followed by ": empty"
+                 */
                 return CardDisplay + " empty" + Environment.NewLine + Environment.NewLine;
             }
             else
             {
+                // Adds 2 more new lines to the string
                 CardDisplay += Environment.NewLine + Environment.NewLine;
             }
+
+            //Creates string variable LineOfDashes,
+            //and declares the constant CardsPerLine,
+            //which is the maximum number of lines per row
             string LineOfDashes;
             const int CardsPerLine = 10;
+
+            /* If there are more cards in the list than the 
+             * maximum number of cards allowed per line, 
+             *  set the LineOfDashes to a string of dashes 
+             *  based on the maximum number of cards allowed in a line
+             * Else, 
+             *  set the LineOfDashes to a string of dashes 
+             *  based on the number of cards in the list
+             */
             if (Cards.Count > CardsPerLine)
             {
                 LineOfDashes = CreateLineOfDashes(CardsPerLine);
@@ -796,17 +824,31 @@ namespace Breakthrough
             {
                 LineOfDashes = CreateLineOfDashes(Cards.Count);
             }
+
+            //Adds the contents of the LineOfDashes function and a new line to CardToDisplay
             CardDisplay += LineOfDashes + Environment.NewLine;
+
+            /*Adds the card descriptions to CardDisplay
+             * The card descriptions are seperated such that the maximum number of descriptions per line is CardsPerLine
+             */
             bool Complete = false;
             int Pos = 0;
             while (!Complete)
             {
                 CardDisplay += "| " + Cards[Pos].GetDescription() + " ";
                 Pos++;
+
+                /*----------------------------
+                // Splits the card descriptions such that
+                // the maximum number of descriptions per line is CardsPerLine
+                */
                 if (Pos % CardsPerLine == 0)
                 {
                     CardDisplay += "|" + Environment.NewLine + LineOfDashes + Environment.NewLine;
                 }
+                //----------------------------
+
+                //If every position has been considered, set complete to true to break the loop.
                 if (Pos == Cards.Count)
                 {
                     Complete = true;
