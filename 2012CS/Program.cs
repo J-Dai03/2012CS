@@ -778,7 +778,10 @@ namespace Breakthrough
             return LineOfDashes;
         }
 
-
+        /* Returns a multi-line string describing: 
+         *  contents of the variable Name
+         *  the descriptions of the cards in the list Cards
+         */
         public string GetCardDisplay()
         {
             /* Sets CardDisplay to a string consisting of 2 lines, 
@@ -828,8 +831,9 @@ namespace Breakthrough
             //Adds the contents of the LineOfDashes function and a new line to CardToDisplay
             CardDisplay += LineOfDashes + Environment.NewLine;
 
-            /*Adds the card descriptions to CardDisplay
-             * The card descriptions are seperated such that the maximum number of descriptions per line is CardsPerLine
+            /* Adds the card descriptions to CardDisplay
+             * The card descriptions are seperated such that 
+             * the maximum number of descriptions per line is CardsPerLine
              */
             bool Complete = false;
             int Pos = 0;
@@ -848,21 +852,47 @@ namespace Breakthrough
                 }
                 //----------------------------
 
-                //If every position has been considered, set complete to true to break the loop.
+                // If every position has been considered, 
+                // set complete to true to break the while loop.
                 if (Pos == Cards.Count)
                 {
                     Complete = true;
                 }
             }
+
+            /* If the number of cards in the list Cards 
+             * is not a multiple of the maximum number of cards in a line:
+             */
             if (Cards.Count % CardsPerLine > 0)
             {
+                // Then add a closing | followed by a new line
                 CardDisplay += "|" + Environment.NewLine;
+
+                // If the are more cards in the list than can fit on one line:
                 if (Cards.Count > CardsPerLine)
                 {
+                    //Reassign LineOfDashes to
                     LineOfDashes = CreateLineOfDashes(Cards.Count % CardsPerLine);
                 }
+
+                //Adds LineOfDashes and a new line to CardDisplay
+                /* Note: if the previous if statement was not triggered 
+                 * and LineOfDashes was not reassigned, 
+                 * then the contents of LineOfDashes are determined by 
+                 * the if (Cards.Count > CardsPerLine){...} else{...} code block, 
+                 * where I commented:
+                 *  If there are more cards in the list than the maximum number of
+                 *  cards allowed per line, 
+                 *      set the LineOfDashes to a string of dashes
+                 *      based on the maximum number of cards allowed in a line
+                 *  Else, 
+                 *      set the LineOfDashes to a string of dashes 
+                 *      based on the number of cards in the list
+                 */           
                 CardDisplay += LineOfDashes + Environment.NewLine;
             }
+
+            //Returns the contents of CardDisplay
             return CardDisplay;
         }
     }
