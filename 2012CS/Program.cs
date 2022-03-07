@@ -549,9 +549,15 @@ namespace Breakthrough
 
     class Card
     {
+        /* The base type card has 2 integers, CardNumber and Score
+         * CardNumber represents the order the card was made, 
+            so the 1st card would have a CardNumber of 1, 2nd would have 2, etc
+         * Score is zero by default, but can be changed in the ToolCard class
+         */
         protected int CardNumber, Score;
         protected static int NextCardNumber = 1;
 
+        //See above for explanation
         public Card()
         {
             CardNumber = NextCardNumber;
@@ -559,15 +565,10 @@ namespace Breakthrough
             Score = 0;
         }
 
+        //Get functions
         public virtual int GetScore()
         {
             return Score;
-        }
-
-        public virtual void Process(CardCollection deck, CardCollection discard,
-            CardCollection hand, CardCollection sequence, Lock currentLock,
-            string choice, int cardChoice)
-        {
         }
 
         public virtual int GetCardNumber()
@@ -575,6 +576,9 @@ namespace Breakthrough
             return CardNumber;
         }
 
+        // Returns the CardNumber as a string, with 
+        // a space before if CardNumber is less than 10
+        // i.e. a single digit number
         public virtual string GetDescription()
         {
             if (CardNumber < 10)
@@ -586,10 +590,25 @@ namespace Breakthrough
                 return CardNumber.ToString();
             }
         }
+
+        /*In the Card base class, this does nothing, 
+         * but it is overriden in the DifficultyCard class
+         */
+        public virtual void Process(CardCollection deck, CardCollection discard,
+            CardCollection hand, CardCollection sequence, Lock currentLock,
+            string choice, int cardChoice)
+        {
+        }
     }
 
     class ToolCard : Card
     {
+        /* Has 2 strings, ToolType and Kit
+         * ToolType represents what type of tool the ToolCard represents,
+         *  So K for key, F for file, P for pick
+         * Kit represents which toolkit the ToolCard comes from,
+         *  So a for acute, b for basic, c for crude
+         */
         protected string ToolType;
         protected string Kit;
 
