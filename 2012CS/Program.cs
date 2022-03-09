@@ -549,7 +549,7 @@ namespace Breakthrough
 
     class Card
     {
-        /* The base type card has 2 integers, CardNumber and Score
+        /* The base class card has 2 integers, CardNumber and Score
          * CardNumber represents the order the card was made, 
             so the 1st card would have a CardNumber of 1, 2nd would have 2, etc
          * Score is zero by default, but can be changed in the ToolCard class
@@ -557,7 +557,8 @@ namespace Breakthrough
         protected int CardNumber, Score;
         protected static int NextCardNumber = 1;
 
-        //See above for explanation
+        //Constructor for the Card class
+        //See above for explanation of the variables
         public Card()
         {
             CardNumber = NextCardNumber;
@@ -612,6 +613,11 @@ namespace Breakthrough
         protected string ToolType;
         protected string Kit;
 
+        /* Constructor for the ToolCard class
+         * Calls the base class of Card to set the CardNumber and Score
+         * Takes 2 strings as inputs and uses them to set the ToolType and Kit
+         * Uses the SetScore function to reassign Score.
+         */
         public ToolCard(string t, string k) : base()
         {
             ToolType = t;
@@ -619,6 +625,13 @@ namespace Breakthrough
             SetScore();
         }
 
+        /* Constructor for the ToolCard class
+         * DOES NOT call the base class (Card)
+         * Takes 2 strings as inputs and uses them to set the ToolType and Kit
+         * Takes an integer and sets the CardNumber as that, rather than using-
+           -the base class and incrementing the static variable NextCardNumber
+         * Uses the SetScore function to assign Score.
+         */
         public ToolCard(string t, string k, int cardNo)
         {
             ToolType = t;
@@ -627,6 +640,8 @@ namespace Breakthrough
             SetScore();
         }
 
+        //Reassigns score based on ToolType
+        //K->3, F->2, P->1
         private void SetScore()
         {
             switch (ToolType)
@@ -649,56 +664,114 @@ namespace Breakthrough
             }
         }
 
+        /* Returns a string describing the card using ToolType and-
+           -Kit with a space between
+         * Overrides the function of the same name in the base class (Card)
+         */
         public override string GetDescription()
         {
             return ToolType + " " + Kit;
         }
+
+        /*Note: since there is no override for the virtual function Process 
+         * from the base class, calling Process will just call the version in-
+         * the base class, wichh literally does nothing.
+         */
     }
 
     class DifficultyCard : Card
     {
+        //The class has it's own variable, a string called Cardtype
         protected string CardType;
 
+        /* Constructor for the DifficultyCard class
+         * Calls the base class of Card to set the CardNumber and Score
+         * Sets the variable CardType to "Dif"
+         */
         public DifficultyCard()
             : base()
         {
             CardType = "Dif";
         }
 
+        /* Constructor for the DifficultyCard class
+         * DOES NOT call the base class (Card)
+         * Sets the variable CardType to "Dif"
+         * Takes an integer and sets the CardNumber as that, rather than using-
+           -the base class and incrementing the static variable NextCardNumber
+         */
         public DifficultyCard(int cardNo)
         {
             CardType = "Dif";
             CardNumber = cardNo;
         }
 
+        /* Returns the CardType
+         * Overrides the function of the same name in the base class (Card)
+         */
         public override string GetDescription()
         {
             return CardType;
         }
 
+        /* Overrides the function defined in the base class (Card) that did nothing
+         * Takes five inputs, 4 CardCollections, 1 Lock, 1 string, 1 integer
+            * The CardCollections are deck, discard, hand, and sequence
+            * The Lock is currentLock
+            * The string is choice
+            * The integer is cardChoice
+         * d
+         */
         public override void Process(CardCollection deck, CardCollection discard, CardCollection hand, CardCollection sequence, Lock currentLock, string choice, int cardChoice)
         {
             int ChoiceAsInteger;
+
+            /* Attempts to convert choice to an integer and- 
+               -assign the result to ChoiceAsInteger
+               It returns True if it succeeded, and false if it failed */
             if (int.TryParse(choice, out ChoiceAsInteger))
             {
+
+                /* If ChoiceAsInteger is between 1 and 5 inclusive, 
+                   i.e. a valid postion in the hand */
                 if (ChoiceAsInteger >= 1 && ChoiceAsInteger <= 5)
                 {
+
+                    /* If ChoiceAsInteger is greater than or equal to-
+                       -the input integer cardChoice, decrement it by 1
+                     */
                     if (ChoiceAsInteger >= cardChoice)
                     {
                         ChoiceAsInteger -= 1;
                     }
+
+                    /* If ChoiceAsInteger is still greater than zero,
+                       decrement it by 1
+                     */
                     if (ChoiceAsInteger > 0)
                     {
                         ChoiceAsInteger -= 1;
                     }
+
+                    /* If the first character of the description of the card-
+                       -in position ChoiceAsInterger of the CardCollection hand is 'K'
+                       i.e.:
+                       If the card in position ChoiceAsInterger of hand is a key
+                     */
                     if (hand.GetCardDescriptionAt(ChoiceAsInteger)[0] == 'K')
                     {
+                        // Move the card in position ChoiceAsInterger of hand to discard
                         Card CardToMove = hand.RemoveCard(hand.GetCardNumberAt(ChoiceAsInteger));
                         discard.AddCard(CardToMove);
+                        // And end the function early
                         return;
                     }
                 }
             }
+            // If you haven't ended the function early
+            /* Move the top 5 cards in the deck to the discard pile, 
+              stopping early if there are no more cards in the deck
+             */
             int Count = 0;
             while (Count < 5 && deck.GetNumberOfCards() > 0)
             {
@@ -730,7 +803,9 @@ namespace Breakthrough
         {
             return Cards.Count;
         }
-        //These functions get the data of the card in position x in the (zero-based) list
+        /* These functions get the data of the card in position x in-
+           -the (zero-based) list
+         */
         public int GetCardNumberAt(int x)
         {
             return Cards[x].GetCardNumber();
@@ -805,7 +880,8 @@ namespace Breakthrough
         {
             /* Sets CardDisplay to a string consisting of 2 lines, 
              * The first line is empty
-             * The second line consists of the contents of the variable Name, followed by a colon
+             * The second line consists of the contents of the variable Name, 
+              * followed by a colon
              */
             string CardDisplay = Environment.NewLine + Name + ":";
 
@@ -814,7 +890,8 @@ namespace Breakthrough
             {
                 /* Returns a string consisting of 4 lines,
                  * The first, third, and fourth lines are empty
-                 * The second line consists of the contents of the variable Name, followed by ": empty"
+                 * The second line consists of the contents of the variable Name, 
+                  * followed by ": empty"
                  */
                 return CardDisplay + " empty" + Environment.NewLine + Environment.NewLine;
             }
@@ -847,7 +924,9 @@ namespace Breakthrough
                 LineOfDashes = CreateLineOfDashes(Cards.Count);
             }
 
-            //Adds the contents of the LineOfDashes function and a new line to CardToDisplay
+            /*Adds the contents of the LineOfDashes function and 
+             * a new line to CardToDisplay
+             */
             CardDisplay += LineOfDashes + Environment.NewLine;
 
             /* Adds the card descriptions to CardDisplay
