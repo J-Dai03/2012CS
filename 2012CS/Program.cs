@@ -436,29 +436,32 @@ namespace Breakthrough
 
     class Challenge
     {
+        /* Consists of a list of strings (Condition) and a bool (Met)
+         * Condition represents the sequence needed to beat the challenge
+         * Met represents whether or not the challenge has been met
+         */
         protected List<string> Condition;
         protected bool Met;
 
+        //A constructor that sets Met to false and doesn't set Condition
         public Challenge()
         {
             Met = false;
         }
 
+        //Get/Set functions for Met and Condition
         public bool GetMet()
         {
             return Met;
         }
-
         public List<string> GetCondition()
         {
             return Condition;
         }
-
         public void SetMet(bool newValue)
         {
             Met = newValue;
         }
-
         public void SetCondition(List<string> newCondition)
         {
             Condition = newCondition;
