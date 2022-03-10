@@ -470,6 +470,7 @@ namespace Breakthrough
 
     class Lock
     {
+        //???????
         protected List<Challenge> Challenges = new List<Challenge>();
 
         public virtual void AddChallenge(List<string> condition)
