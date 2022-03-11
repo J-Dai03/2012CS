@@ -473,6 +473,9 @@ namespace Breakthrough
         //???????
         protected List<Challenge> Challenges = new List<Challenge>();
 
+        /* Takes a List of strings and adds a challenge with  
+         * that List of strings as its condition to Challenges
+         */
         public virtual void AddChallenge(List<string> condition)
         {
             Challenge C = new Challenge();
@@ -480,9 +483,16 @@ namespace Breakthrough
             Challenges.Add(C);
         }
 
+        /* Takes a List of strings and returns a string consisting of 
+         * the elements of the input list, seperated by ", "
+         */
         private string ConvertConditionToString(List<string> c)
         {
             string ConditionAsString = "";
+            /* Uses c.Count - 2 because we don't want to add a 
+             * seperator after the last element, and they 
+             * are using <= rather than < in the condition
+             */
             for (int Pos = 0; Pos <= c.Count - 2; Pos++)
             {
                 ConditionAsString += c[Pos] + ", ";
@@ -491,6 +501,7 @@ namespace Breakthrough
             return ConditionAsString;
         }
 
+        //
         public virtual string GetLockDetails()
         {
             string LockDetails = Environment.NewLine + "CURRENT LOCK" + Environment.NewLine + "------------" + Environment.NewLine;
