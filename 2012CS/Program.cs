@@ -470,7 +470,7 @@ namespace Breakthrough
 
     class Lock
     {
-        //???????
+        //No given constructor, Challenges is assigned when it is initialised
         protected List<Challenge> Challenges = new List<Challenge>();
 
         /* Takes a List of strings and adds a challenge with  
@@ -501,7 +501,26 @@ namespace Breakthrough
             return ConditionAsString;
         }
 
-        //
+        // Takes a string and returns a bool. 
+        // If the string is the condition of one of the challenges,
+        // it sets the met condition to true and returns true
+        // If not, it returns false. 
+        // Note that if the Challenge has already been met, it will not be tested
+        public virtual bool CheckIfConditionMet(string sequence)
+        {
+            foreach (var C in Challenges)
+            {
+                if (!C.GetMet() && sequence == ConvertConditionToString(C.GetCondition()))
+                {
+                    C.SetMet(true);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /*Get/Set functions*/
+        // Returns a string describing which challneges have and haven't been met
         public virtual string GetLockDetails()
         {
             string LockDetails = Environment.NewLine + "CURRENT LOCK" + Environment.NewLine + "------------" + Environment.NewLine;
@@ -520,7 +539,9 @@ namespace Breakthrough
             LockDetails += Environment.NewLine;
             return LockDetails;
         }
-
+        // Returns a bool. If the lock is solved, it returns true, if not, false. 
+        /* Works by iterating through each challenge and 
+         * returning false if any of their Met boolean variable are false*/
         public virtual bool GetLockSolved()
         {
             foreach (var C in Challenges)
@@ -532,30 +553,17 @@ namespace Breakthrough
             }
             return true;
         }
-
-        public virtual bool CheckIfConditionMet(string sequence)
-        {
-            foreach (var C in Challenges)
-            {
-                if (!C.GetMet() && sequence == ConvertConditionToString(C.GetCondition()))
-                {
-                    C.SetMet(true);
-                    return true;
-                }
-            }
-            return false;
-        }
-
+        //Sets the Met bool of the the challenge in position 'pos' to 'value'
         public virtual void SetChallengeMet(int pos, bool value)
         {
             Challenges[pos].SetMet(value);
         }
-
+        //Gets the Met bool of the the challenge in position 'pos'
         public virtual bool GetChallengeMet(int pos)
         {
             return Challenges[pos].GetMet();
         }
-
+        //Gets the number of challenges by taking the length of Challenges
         public virtual int GetNumberOfChallenges()
         {
             return Challenges.Count;
