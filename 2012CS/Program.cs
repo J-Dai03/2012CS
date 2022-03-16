@@ -39,6 +39,12 @@ namespace Breakthrough
         // Stores whether the current lock is solved or not
         private bool LockSolved;
 
+        //The constructor for the Breakthrough class.
+        /* Note: the variable Locks is assigned when 
+         * it is intialised, rather than in the constructor.
+         * However, it gets items added to it in the LoadLocks
+         * function, which is called in the constructor.
+         */
         public Breakthrough()
         {
             Deck = new CardCollection("DECK");
@@ -277,16 +283,32 @@ namespace Breakthrough
             }
         }
 
+        //Loads the locks represented in locks.txt into the Locks variable
+        // See the section on locks.txt in the shared fiel for more details
         private void LoadLocks()
         {
+            /* Using a variable for the file to load makes it easier to 
+             * maintain and edit, since you can change which file you load
+             * by simmply changing one variable
+             */
             string FileName = "locks.txt";
+            // Stores the current line of the file that you are processing
             string LineFromFile;
+            // Stores the challenges on the current lock you are processing
             List<string> Challenges;
+            // Assigns the variable lock
             Locks = new List<Lock>();
+            /* Trys to run the code in the the try block until an error occurs, 
+             * in which case it switches to the catch block, 
+             * which just outputs an error message in the console
+             */
             try
             {
+                //The using code block means that MyStream can't be 
+                //accessed from outside the codeblock
                 using (StreamReader MyStream = new StreamReader(FileName))
                 {
+                    //Sets the first line from the file as LineFromFile
                     LineFromFile = MyStream.ReadLine();
                     while (LineFromFile != null)
                     {
@@ -302,6 +324,7 @@ namespace Breakthrough
                         LineFromFile = MyStream.ReadLine();
                     }
                 }
+                //Here, I can't access MyStream
             }
             catch
             {
