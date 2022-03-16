@@ -22,15 +22,21 @@ namespace Breakthrough
 
     class Breakthrough
     {
+        //Note each lock in the game can  be thought of as a level
+        //This is a static variable used to generate random numbers
         private static Random RNoGen = new Random();
+        //These are self explanatory
         private CardCollection Deck;
         private CardCollection Hand;
         private CardCollection Sequence;
         private CardCollection Discard;
-        private List<Lock> Locks = new List<Lock>();
         private int Score;
-        private bool GameOver;
         private Lock CurrentLock;
+        // Stores all the locks in a list
+        private List<Lock> Locks = new List<Lock>();
+        // Stores whether the game should continue
+        private bool GameOver;
+        // Stores whether the current lock is solved or not
         private bool LockSolved;
 
         public Breakthrough()
