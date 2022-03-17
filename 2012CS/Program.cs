@@ -283,8 +283,9 @@ namespace Breakthrough
             }
         }
 
-        //Loads the locks represented in locks.txt into the Locks variable
+        // Loads the locks represented in locks.txt into the Locks variable
         // See the section on locks.txt in the shared fiel for more details
+        // Also see the sections about LoadLocks for more detailed explanations
         private void LoadLocks()
         {
             /* Using a variable for the file to load makes it easier to 
@@ -308,19 +309,31 @@ namespace Breakthrough
                 //accessed from outside the codeblock
                 using (StreamReader MyStream = new StreamReader(FileName))
                 {
-                    //Sets the first line from the file as LineFromFile
+                    //Sets LineFromFile as the first line from the file
                     LineFromFile = MyStream.ReadLine();
                     while (LineFromFile != null)
                     {
+                        // Splits the line into strings representing the challenges
                         Challenges = LineFromFile.Split(';').ToList();
+                        // Creates a new Lock variable called LockFromFile, 
+                        // used to hold the current lock to add to Locks
                         Lock LockFromFile = new Lock();
+                        //For each challenge
                         foreach (var C in Challenges)
                         {
+                            // Creates a list of strings representing the conditions of the challenge
                             List<string> Conditions = new List<string>();
                             Conditions = C.Split(',').ToList();
+                            //Adds a challenge containing all the 
                             LockFromFile.AddChallenge(Conditions);
                         }
+                        //Adds the newly created lock to Locks
                         Locks.Add(LockFromFile);
+                        //Loads the next line into LineFromFile
+                        /*Note that the last line, which is empty, 
+                         * causes LineFromFile to be set to null,
+                         * rather than an empty string for some reason
+                         */
                         LineFromFile = MyStream.ReadLine();
                     }
                 }
