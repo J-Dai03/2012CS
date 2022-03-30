@@ -691,7 +691,9 @@ namespace Breakthrough
         }
 
         /* Constructor for the ToolCard class
-         * DOES NOT call the base class (Card)
+         * Calls the base class (Card) without explicitly saying it, 
+         *  since it is an inherited class
+         *  Calls the constructor with no parameters, which is the one described
          * Takes 2 strings as inputs and uses them to set the ToolType and Kit
          * Takes an integer and sets the CardNumber as that, rather than using-
            -the base class and incrementing the static variable NextCardNumber
@@ -785,7 +787,6 @@ namespace Breakthrough
             * The Lock is currentLock
             * The string is choice
             * The integer is cardChoice
-         * d
          */
         public override void Process(CardCollection deck, CardCollection discard, CardCollection hand, CardCollection sequence, Lock currentLock, string choice, int cardChoice)
         {
