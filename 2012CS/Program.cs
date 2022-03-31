@@ -455,26 +455,52 @@ namespace Breakthrough
             return Locks[RNoGen.Next(0, Locks.Count)];
         }
 
+        //Gets the card from the deck
+        /* Deals with:
+            * drawing a difficulty cards, 
+            * refilling the hand, 
+            * and when you run out of cards in the deck
+         */
         private void GetCardFromDeck(int cardChoice)
         {
+            //If the deck isn't empty
             if (Deck.GetNumberOfCards() > 0)
             {
+                //If the next card is a difficulty card
                 if (Deck.GetCardDescriptionAt(0) == "Dif")
                 {
+                    // Removes the difficulty card,
                     Card CurrentCard = Deck.RemoveCard(Deck.GetCardNumberAt(0));
+
+                    //Tells the player a difficulty has been encountered
                     Console.WriteLine();
                     Console.WriteLine("Difficulty encountered!");
+
+                    //Shows the player their hand
                     Console.WriteLine(Hand.GetCardDisplay());
+
+                    // Tells the player to specify a position of a key 
+                    // or to discard 5 cards, 
+                    //  then takes the input
                     Console.Write("To deal with this you need to either lose a key ");
                     Console.Write("(enter 1-5 to specify position of key) or (D)iscard five cards from the deck:> ");
                     string Choice = Console.ReadLine();
                     Console.WriteLine();
+
+                    //Moves the difficulty card to the discard
                     Discard.AddCard(CurrentCard);
+
+                    //Deals with drawing a difficulty card
                     CurrentCard.Process(Deck, Discard, Hand, Sequence, CurrentLock, Choice, cardChoice);
                 }
             }
+
+            //While the Hand does not have enough cards, and the deck isn't empty, keep trying to refill the hand
             while (Hand.GetNumberOfCards() < 5 && Deck.GetNumberOfCards() > 0)
             {
+                //If the card you would move from the deck to the hand is a difficulty card,
+                // move it to the Discard instead, and tell the player
+                //Else, move it to the Hand
                 if (Deck.GetCardDescriptionAt(0) == "Dif")
                 {
                     MoveCard(Deck, Discard, Deck.GetCardNumberAt(0));
@@ -485,6 +511,8 @@ namespace Breakthrough
                     MoveCard(Deck, Hand, Deck.GetCardNumberAt(0));
                 }
             }
+
+            //If the Deck is empty and the Hand still isn't full, the game is over
             if (Deck.GetNumberOfCards() == 0 && Hand.GetNumberOfCards() < 5)
             {
                 GameOver = true;
