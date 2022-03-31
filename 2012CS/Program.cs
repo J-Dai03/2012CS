@@ -22,7 +22,7 @@ namespace Breakthrough
 
     class Breakthrough
     {
-        //Note: each lock in the game can  be thought of as a level
+        /*Note: each lock in the game can  be thought of as a level*/
 
         //This is a static variable used to generate random numbers
         private static Random RNoGen = new Random();
@@ -206,8 +206,10 @@ namespace Breakthrough
             }
         }
 
+        //Takes an integer input and
         private void PlayCardToSequence(int cardChoice)
         {
+            //if the Sequence is not empty
             if (Sequence.GetNumberOfCards() > 0)
             {
                 if (Hand.GetCardDescriptionAt(cardChoice - 1)[0] != Sequence.GetCardDescriptionAt(Sequence.GetNumberOfCards() - 1)[0])
@@ -221,6 +223,8 @@ namespace Breakthrough
                 Score += MoveCard(Hand, Sequence, Hand.GetCardNumberAt(cardChoice - 1));
                 GetCardFromDeck(cardChoice);
             }
+
+
             if (CheckIfLockChallengeMet())
             {
                 Console.WriteLine();
@@ -230,16 +234,29 @@ namespace Breakthrough
             }
         }
 
+        //Returns a bool that 
         private bool CheckIfLockChallengeMet()
         {
             string SequenceAsString = "";
+
+            /* Runs through the sequence from back to front, 
+             * stopping when 3 items have been tested 
+             * or when you have reached the front of the sequence
+             */
             for (int Count = Sequence.GetNumberOfCards() - 1; Count >= Math.Max(0, Sequence.GetNumberOfCards() - 3); Count--)
             {
+                /*if the Sequence so far has been greater than zero, 
+                 * a seperating comma and space is added to the front of SequenceAsString
+                 */
                 if (SequenceAsString.Length > 0)
                 {
                     SequenceAsString = ", " + SequenceAsString;
                 }
+
+                //The Card Description of the position we are currently considering is added to the front of SequenceAsString
                 SequenceAsString = Sequence.GetCardDescriptionAt(Count) + SequenceAsString;
+
+                //Checks if the current version of SequenceAsString can be used to matches the condition of the CurrentLock
                 if (CurrentLock.CheckIfConditionMet(SequenceAsString))
                 {
                     return true;
@@ -474,6 +491,11 @@ namespace Breakthrough
             }
         }
 
+        /* Outputs a prompt to enter a number specifying which card to use,
+         * and returns the input after converting it to an integer.
+         * Will keep asking if the input cannot be converted to an integer, 
+         * but not if it is out of bounds
+         */
         private int GetCardChoice()
         {
             string Choice;
@@ -487,6 +509,9 @@ namespace Breakthrough
             return Value;
         }
 
+        /* Outputs a prompt to enter a choice between discarding or playing a card,
+         * and returns the input after capitalising it
+         */
         private string GetDiscardOrPlayChoice()
         {
             string Choice;
@@ -495,6 +520,9 @@ namespace Breakthrough
             return Choice;
         }
 
+        /* Outputs a prompt to enter a choice between inspecting the discard and using a card,
+         * and returns the input after capitalising it
+         */
         private string GetChoice()
         {
             Console.WriteLine();
@@ -503,6 +531,7 @@ namespace Breakthrough
             return Choice;
         }
 
+        //Self explanantory - adds 5 Difficulty cards to the deck
         private void AddDifficultyCardsToDeck()
         {
             for (int Count = 1; Count <= 5; Count++)
