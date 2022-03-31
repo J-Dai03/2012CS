@@ -206,25 +206,36 @@ namespace Breakthrough
             }
         }
 
-        //Takes an integer input and
+        /* Takes an integer input and attempts to play a card to the sequence
+         * Note that the card played is the card in position of the integer input, 
+         * IF THE SYSTEM WAS ONE BASED INSTEAD OF ZERO BASED
+         */
         private void PlayCardToSequence(int cardChoice)
         {
             //if the Sequence is not empty
             if (Sequence.GetNumberOfCards() > 0)
             {
+                /* If the first character of the card they are trying to play 
+                 *  and of the last item in the Sequence are NOT the same, 
+                 * i.e. If the card they are trying to play and 
+                 *  the last item of the Sequence DO NOT have the same ToolType
+                 */
                 if (Hand.GetCardDescriptionAt(cardChoice - 1)[0] != Sequence.GetCardDescriptionAt(Sequence.GetNumberOfCards() - 1)[0])
                 {
+                    //Play the card and draw the replacement
                     Score += MoveCard(Hand, Sequence, Hand.GetCardNumberAt(cardChoice - 1));
                     GetCardFromDeck(cardChoice);
                 }
             }
+
             else
             {
+                //Play the card and draw the replacement
                 Score += MoveCard(Hand, Sequence, Hand.GetCardNumberAt(cardChoice - 1));
                 GetCardFromDeck(cardChoice);
             }
 
-
+            //Self explanatory - If a challenge has been met, it tells the player and adds 5 to the score
             if (CheckIfLockChallengeMet())
             {
                 Console.WriteLine();
@@ -234,7 +245,7 @@ namespace Breakthrough
             }
         }
 
-        //Returns a bool that 
+        //Returns a bool that tells you if a lock challenge has been met using the last 1, 2, or 3 cards
         private bool CheckIfLockChallengeMet()
         {
             string SequenceAsString = "";
@@ -918,7 +929,7 @@ namespace Breakthrough
         }
 
         /* Constructor for the DifficultyCard class
-         * DOES NOT call the base class (Card)
+         * Calls the base class of Card to set the CardNumber and Score
          * Sets the variable CardType to "Dif"
          * Takes an integer and sets the CardNumber as that, rather than using-
            -the base class and incrementing the static variable NextCardNumber
@@ -937,12 +948,20 @@ namespace Breakthrough
             return CardType;
         }
 
-        /* Overrides the function defined in the base class (Card) that did nothing
+        /* Handles what happens if a difficulty card is drawn.
+         * Overrides the function defined in the base class (Card) that did nothing
          * Takes five inputs, 4 CardCollections, 1 Lock, 1 string, 1 integer
             * The CardCollections are deck, discard, hand, and sequence
             * The Lock is currentLock
             * The string is choice
+                * choice is the (1 based) position of the card the player has chosen to discard, 
+                *   OR choice is "D" to say the player wants to Discard a card
+                * Note: In reality:
+                    * If choice can't be converted to an integer that is between 1 and 5 inclusive,
+                        * The early return function will not be called and 
+                          the code will progress to the discard a card bit of code
             * The integer is cardChoice
+                * cardChoice is the position of the card that was played before you drew to replace it
          */
         public override void Process(CardCollection deck, CardCollection discard, CardCollection hand, CardCollection sequence, Lock currentLock, string choice, int cardChoice)
         {
@@ -959,8 +978,10 @@ namespace Breakthrough
                 if (ChoiceAsInteger >= 1 && ChoiceAsInteger <= 5)
                 {
 
-                    /* If ChoiceAsInteger is greater than or equal to-
-                       -the input integer cardChoice, decrement it by 1
+                    /* If ChoiceAsInteger is greater than or equal to the input integer cardChoice, 
+                        * decrement it by 1
+                     * This is because the card you wanted to dicard was moved to the left by one 
+                        * by the playing of the card
                      */
                     if (ChoiceAsInteger >= cardChoice)
                     {
@@ -968,7 +989,9 @@ namespace Breakthrough
                     }
 
                     /* If ChoiceAsInteger is still greater than zero,
-                       decrement it by 1
+                       decrement it by 1, 
+                     * This is because the input system is one-based, 
+                        * but the rest of it is zero-based
                      */
                     if (ChoiceAsInteger > 0)
                     {
@@ -976,16 +999,17 @@ namespace Breakthrough
                     }
 
                     /* If the first character of the description of the card-
-                       -in position ChoiceAsInterger of the CardCollection hand is 'K'
+                       -in position ChoiceAsInteger of the CardCollection hand is 'K'
                        i.e.:
-                       If the card in position ChoiceAsInterger of hand is a key
+                     * If the card in position ChoiceAsInterger of hand is a key
                      */
                     if (hand.GetCardDescriptionAt(ChoiceAsInteger)[0] == 'K')
                     {
-                        // Move the card in position ChoiceAsInterger of hand to discard
+                        // Moves the card in position ChoiceAsInterger of Hand to the Discard
                         Card CardToMove = hand.RemoveCard(hand.GetCardNumberAt(ChoiceAsInteger));
                         discard.AddCard(CardToMove);
-                        // And end the function early
+
+                        // And ends the function early
                         return;
                     }
                 }
