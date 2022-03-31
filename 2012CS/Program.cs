@@ -719,6 +719,7 @@ namespace Breakthrough
         {
             foreach (var C in Challenges)
             {
+                //Won't return true if it is the current challenge being examined has already been met
                 if (!C.GetMet() && sequence == ConvertConditionToString(C.GetCondition()))
                 {
                     C.SetMet(true);
