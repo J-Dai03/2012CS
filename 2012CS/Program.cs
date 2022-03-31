@@ -17,6 +17,16 @@ namespace Breakthrough
             Breakthrough ThisGame = new Breakthrough();
             ThisGame.PlayGame();
             Console.ReadLine();
+
+            /* Some code that would allow you to replay the game without having to restart the program
+            
+            Breakthrough ThisGame = new Breakthrough();
+            while (true)
+            {
+                ThisGame.PlayGame();
+                Console.ReadLine();
+            }
+             */
         }
     }
 
