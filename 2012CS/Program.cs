@@ -22,9 +22,11 @@ namespace Breakthrough
 
     class Breakthrough
     {
-        //Note each lock in the game can  be thought of as a level
+        //Note: each lock in the game can  be thought of as a level
+
         //This is a static variable used to generate random numbers
         private static Random RNoGen = new Random();
+
         //These are self explanatory
         private CardCollection Deck;
         private CardCollection Hand;
@@ -32,10 +34,13 @@ namespace Breakthrough
         private CardCollection Discard;
         private int Score;
         private Lock CurrentLock;
+
         // Stores all the locks in a list
         private List<Lock> Locks = new List<Lock>();
+
         // Stores whether the game should continue
         private bool GameOver;
+
         // Stores whether the current lock is solved or not
         private bool LockSolved;
 
@@ -55,36 +60,57 @@ namespace Breakthrough
             LoadLocks();
         }
 
+        //Self explanatory - plays the game
         public void PlayGame()
         {
             string MenuChoice;
+
+            //If Locks is not empty, i.e. if it loaded properly
             if (Locks.Count > 0)
             {
+                //Sets up the game
+                //Why these 2 lines weren't included in the SetUpGame function is beyond me
                 GameOver = false;
                 CurrentLock = new Lock();
                 SetupGame();
+
+                //While GameOver is false
                 while (!GameOver)
                 {
                     LockSolved = false;
+
+                    //This while loop is only continues when 
+                    //  LockSolved is false 
+                    //  and GameOver is false
                     while (!LockSolved && !GameOver)
                     {
+                        //Displays data
                         Console.WriteLine();
                         Console.WriteLine("Current score: " + Score);
                         Console.WriteLine(CurrentLock.GetLockDetails());
                         Console.WriteLine(Sequence.GetCardDisplay());
                         Console.WriteLine(Hand.GetCardDisplay());
+
+                        //Gets the player's choice of action
                         MenuChoice = GetChoice();
+
                         switch (MenuChoice)
                         {
+                            //When D is chosen, the Discard is displayed
                             case "D":
                                 {
                                     Console.WriteLine(Discard.GetCardDisplay());
                                     break;
                                 }
+                            //When U is chosen, a card is selected, then discarded or played
                             case "U":
                                 {
+                                    //Gets the card chosen, or rather the postion of the card chosen
                                     int CardChoice = GetCardChoice();
+
+                                    //Gets whether the card is to be discarded for played, in the form of D or P
                                     string DiscardOrPlay = GetDiscardOrPlayChoice();
+
                                     if (DiscardOrPlay == "D")
                                     {
                                         MoveCard(Hand, Discard, Hand.GetCardNumberAt(CardChoice - 1));
@@ -92,15 +118,24 @@ namespace Breakthrough
                                     }
                                     else if (DiscardOrPlay == "P")
                                         PlayCardToSequence(CardChoice);
+                                        //PlayCardToSequence has GetCardFromDeck built in, 
+                                        //so it doesn't need to be called separately
                                     break;
                                 }
                         }
+
+                        //Once the player's actions have been run, it checks if the CurrentLock has been solved, 
+                        //And if so, it will change the bool LockSolved to true and run ProcessLockSolved
                         if (CurrentLock.GetLockSolved())
                         {
                             LockSolved = true;
+
+                            //ProcessLockSolved does several simple things, check its commenting
                             ProcessLockSolved();
                         }
                     }
+
+                    //Checks if the game is over
                     GameOver = CheckIfPlayerHasLost();
                 }
             }
@@ -108,6 +143,13 @@ namespace Breakthrough
                 Console.WriteLine("No locks in file.");
         }
 
+        /* Does the stuff that needs to be done once a lock is solved. 
+         * These are:
+            * Adding 10 to the Score
+            * Telling the player that the lock has been solved and outputting their score
+            * Moving the cards in the Discard pile to the Deck then reshuffling the Deck
+            * Loading a new Random lock
+         */
         private void ProcessLockSolved()
         {
             Score += 10;
@@ -120,6 +162,8 @@ namespace Breakthrough
             CurrentLock = GetRandomLock();
         }
 
+        // Returns a bool depending on whether or not the player has lost. 
+        // Will output a nessage to the console if they have
         private bool CheckIfPlayerHasLost()
         {
             if (Deck.GetNumberOfCards() == 0)
@@ -133,6 +177,8 @@ namespace Breakthrough
             }
         }
 
+        //Sets up the game
+        //Checks if you want to load a game from file or start a new one
         private void SetupGame()
         {
             string Choice;
@@ -140,6 +186,7 @@ namespace Breakthrough
             Choice = Console.ReadLine().ToUpper();
             if (Choice == "L")
             {
+                //If it fails to load, GameOver is set to true
                 if (!LoadGame("game1.txt"))
                 {
                     GameOver = true;
@@ -201,15 +248,26 @@ namespace Breakthrough
             return false;
         }
 
+        /*Takes a string that represents a list of cards and a CardCollection, 
+         * and fills the CardCollection with those cards.
+         * The string's format: A series of cards seperated by commas
+         * The card format: The ToolType, the ToolKit, then the CardNumber, each seperatede by a space
+         */
         private void SetupCardCollectionFromGameFile(string lineFromFile, CardCollection cardCol)
         {
+            //A list of strings that stores lineFromFile after it has been split into is components
             List<string> SplitLine;
             int CardNumber;
+
+            // if the string is not empty
             if (lineFromFile.Length > 0)
             {
+                //Splits the line into a list of strings
                 SplitLine = lineFromFile.Split(',').ToList();
                 foreach (var Item in SplitLine)
                 {
+                    //If the string is 5 characters long, the CardNumber is the character in the 5th position
+                    //Else, the CardNumber is the characters in the 5th and 6th positions
                     if (Item.Length == 5)
                     {
                         CardNumber = Convert.ToInt32(Item[4]);
@@ -218,6 +276,14 @@ namespace Breakthrough
                     {
                         CardNumber = Convert.ToInt32(Item.Substring(4, 2));
                     }
+
+                    /* If the  first 3 characters are "Dif", 
+                        * a difficulty card is created with the previously found CardNumber 
+                        * and added to the CardCollection
+                     * Else, 
+                        * a ToolCard is created with the previously found CardNumber
+                        * and added to the CardCollection
+                     */
                     if (Item.Substring(0, 3) == "Dif")
                     {
                         DifficultyCard CurrentCard = new DifficultyCard(CardNumber);
@@ -232,17 +298,37 @@ namespace Breakthrough
             }
         }
 
+        /* Sets up the CurrentLock
+         * Takes 2 inputs
+            * line1 is the lock and its challenges,
+            * line2 represents which challenges have and haven't been completed
+         * 
+         */
         private void SetupLock(string line1, string line2)
         {
+            //represents the current line you are examining-
+            //-after it has been split up into a list of strings
             List<string> SplitLine;
+
+            //Splits up line1 into strings, each one representing a challenge
             SplitLine = line1.Split(';').ToList();
+
+            /* Splits each challenge-representing-string into 
+             * its consituent conditions and adds the challenge to the lock
+             */
             foreach (var Item in SplitLine)
             {
                 List<string> Conditions;
                 Conditions = Item.Split(',').ToList();
                 CurrentLock.AddChallenge(Conditions);
             }
+
+            // Splits up line2 into strings, 
+                //each one representing a challenge's completetion status
+            // Y means the challenge has been completed, N means it has not
             SplitLine = line2.Split(';').ToList();
+
+            //Applies to completion statuses
             for (int Count = 0; Count < SplitLine.Count; Count++)
             {
                 if (SplitLine[Count] == "Y")
@@ -252,6 +338,7 @@ namespace Breakthrough
             }
         }
 
+        //Loads data from the file
         private bool LoadGame(string fileName)
         {
             string LineFromFile;
@@ -345,6 +432,7 @@ namespace Breakthrough
             }
         }
 
+        //Returns a random Lock from Locks
         private Lock GetRandomLock()
         {
             return Locks[RNoGen.Next(0, Locks.Count)];
@@ -423,6 +511,12 @@ namespace Breakthrough
             }
         }
 
+        /* Adds the cards that would fill Deck when Deck is empty
+         * The cards added are:
+         *  15 picks, 5 from each kit
+         *  9 files, 3 from each kit
+         *  9 keys, 3 from each kit
+         */
         private void CreateStandardDeck()
         {
             Card NewCard;
@@ -452,6 +546,11 @@ namespace Breakthrough
             }
         }
 
+        /* Moves the first instance of the card with the input cardNumber
+         * in fromCollection to toCollection
+         * If you are moving a card from the Hand to the sequence, it will return the score of the card moved
+         * If not, it returns 0.
+         */
         private int MoveCard(CardCollection fromCollection, CardCollection toCollection, int cardNumber)
         {
             int Score = 0;
@@ -850,7 +949,7 @@ namespace Breakthrough
 
     class CardCollection
     {
-        // Consists of a list of cards and a string desccribing the name
+        // Consists of a list of cards and a string describing the name
         protected List<Card> Cards = new List<Card>();
         protected string Name;
 
@@ -907,7 +1006,7 @@ namespace Breakthrough
             }
         }
 
-        // Pops the first instance of the card with the value equal to the input.
+        // Pops the first instance of the card with a CardNumber equal to the input.
         // If there is no card with that value in the list, null is returned.
         public Card RemoveCard(int cardNumber)
         {
