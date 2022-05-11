@@ -409,14 +409,11 @@ namespace Breakthrough
         }
 
         // Loads the locks represented in locks.txt into the Locks variable
-        // See the section on locks.txt in the shared fiel for more details
+        // See the section on locks.txt in the shared file for more details
         // Also see the sections about LoadLocks for more detailed explanations
         private void LoadLocks()
         {
-            /* Using a variable for the file to load makes it easier to 
-             * maintain and edit, since you can change which file you load
-             * by simmply changing one variable
-             */
+            /* This is the name of the file to load. Using this variable makes it easier to modify to load different files*/
             string FileName = "locks.txt";
             // Stores the current line of the file that you are processing
             string LineFromFile;
