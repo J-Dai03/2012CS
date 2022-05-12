@@ -217,9 +217,7 @@ namespace Breakthrough
         }
 
         /* Takes an integer input and attempts to play a card to the sequence
-         * Note that the card played is the card in position of the integer input, 
-         * IF THE SYSTEM WAS ONE BASED INSTEAD OF ZERO BASED
-         */
+         * Note that cardChoice uses a ONE-BASED SYSTEM, which needs to be compensated*/
         private void PlayCardToSequence(int cardChoice)
         {
             //if the Sequence is not empty
