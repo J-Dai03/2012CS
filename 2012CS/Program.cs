@@ -90,8 +90,7 @@ namespace Breakthrough
                     LockSolved = false;
 
                     //This while loop is only continues when 
-                    //  LockSolved is false 
-                    //  and GameOver is false
+                    //  LockSolved and GameOver are false
                     while (!LockSolved && !GameOver)
                     {
                         //Displays data
